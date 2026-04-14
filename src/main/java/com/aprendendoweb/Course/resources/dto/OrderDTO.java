@@ -7,7 +7,7 @@ import java.util.stream.Collectors;
 import com.aprendendoweb.Course.entities.Order;
 
 public class OrderDTO {
-	private Integer id;
+	private Long id;
 	private Instant moment;
 	private String orderStatus;
 	private UserDTO client;
@@ -22,7 +22,7 @@ public class OrderDTO {
 		this.items = entity.getItems().stream().map(OrderItemDTO::new).collect(Collectors.toList());
 	}
 
-	public Integer getId() {
+	public Long getId() {
 		return id;
 	}
 

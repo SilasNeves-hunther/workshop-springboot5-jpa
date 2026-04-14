@@ -4,7 +4,7 @@ import com.aprendendoweb.Course.entities.Category;
 
 public class CategoryDTO {
 
-	private Integer id;
+	private Long id;
 	private String name;
 
 	public CategoryDTO(Category entity) {
@@ -12,7 +12,7 @@ public class CategoryDTO {
 		this.name = entity.getName();
 	}
 
-	public Integer getId() {
+	public Long getId() {
 		return id;
 	}
 

@@ -6,7 +6,7 @@ import java.util.stream.Collectors;
 import com.aprendendoweb.Course.entities.Product;
 
 public class ProductDTO {
-	private Integer id;
+	private Long id;
 	private String name;
 	private String description;
 	private Double price;
@@ -23,7 +23,7 @@ public class ProductDTO {
 		this.categories = entity.getCategories().stream().map(CategoryDTO::new).collect(Collectors.toList());
 	}
 
-	public Integer getId() {
+	public Long getId() {
 		return id;
 	}
 
