@@ -1,26 +1,33 @@
 package com.aprendendoweb.Course.services;
 
 import java.util.List;
-import java.util.Optional;
+import java.util.stream.Collectors;
 
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 import com.aprendendoweb.Course.entities.User;
 import com.aprendendoweb.Course.repositories.UserRepository;
+import com.aprendendoweb.Course.resources.dto.UserDTO;
+
+import jakarta.transaction.Transactional;
 
 @Service
 public class UserService {
 
-	@Autowired
-	private UserRepository repository;
-	
-	public List<User> findAll(){
-		return repository.findAll();
+	private final UserRepository repository;
+
+	public UserService(UserRepository repository) {
+		this.repository = repository;
 	}
-	
-	public User findById(Long id) {
-		Optional<User> obj = repository.findById(id);
-		return obj.get();
+
+	@Transactional
+	public List<UserDTO> findAll() {
+		return repository.findAll().stream().map(UserDTO::new).collect(Collectors.toList());
+	}
+
+	@Transactional
+	public UserDTO findById(Long id) {
+		User user = repository.findById(id).orElseThrow(() -> new RuntimeException("Usuário não encontrado"));
+		return new UserDTO(user);
 	}
 }

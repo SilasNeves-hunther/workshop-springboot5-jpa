@@ -9,7 +9,7 @@ import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
-import com.aprendendoweb.Course.entities.Product;
+import com.aprendendoweb.Course.resources.dto.ProductDTO;
 import com.aprendendoweb.Course.services.ProductService;
 
 
@@ -21,14 +21,14 @@ public class ProductResource {
 	private ProductService service;
 	
 	@GetMapping
-	public ResponseEntity<List<Product>> findAll(){
-		List<Product> list = service.findAll();
+	public ResponseEntity<List<ProductDTO>> findAll(){
+		List<ProductDTO> list = service.findAll();
 		return ResponseEntity.ok().body(list);
 	}
 	
 	@GetMapping(value = "/{id}")
-	public ResponseEntity<Product> findById(@PathVariable Long id){
-		Product obj = service.findById(id);
+	public ResponseEntity<ProductDTO> findById(@PathVariable Long id){
+		ProductDTO obj = service.findById(id);
 		return ResponseEntity.ok().body(obj);
 	}
 }

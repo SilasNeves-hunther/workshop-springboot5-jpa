@@ -1,32 +1,38 @@
 package com.aprendendoweb.Course.services;
 
 import java.util.List;
+import java.util.stream.Collectors;
 
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 import com.aprendendoweb.Course.entities.Order;
 import com.aprendendoweb.Course.repositories.OrderRepository;
+import com.aprendendoweb.Course.resources.dto.OrderDTO;
 
 import jakarta.transaction.Transactional;
 
 @Service
 public class OrderService {
 
-	@Autowired
-	private OrderRepository repository;
+    private final OrderRepository repository;
 
-	@Transactional
-	public List<Order> findAll() {
-		List<Order> orders = repository.findAll();
-		orders.forEach(o -> o.getItems().size());
-		return orders;
-	}
+    public OrderService(OrderRepository repository) {
+        this.repository = repository;
+    }
 
-	@Transactional
-	public Order findById(Long id) {
-		Order order = repository.findById(id).orElseThrow();
-		order.getItems().size();
-		return order;
-	}
+    @Transactional
+    public List<OrderDTO> findAll(){
+        return repository.findAll()
+                         .stream()
+                         .map(OrderDTO::new)
+                         .collect(Collectors.toList());
+    }
+
+    @Transactional
+    public OrderDTO findById(Long id) {
+        Order order = repository.findById(id)
+                                .orElseThrow(() -> new RuntimeException("Pedido não encontrado"));
+        return new OrderDTO(order);
+    }
 }
+

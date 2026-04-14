@@ -1,0 +1,44 @@
+package com.aprendendoweb.Course.resources.dto;
+
+import java.time.Instant;
+import java.util.List;
+import java.util.stream.Collectors;
+
+import com.aprendendoweb.Course.entities.Order;
+
+public class OrderDTO {
+	private Integer id;
+	private Instant moment;
+	private String orderStatus;
+	private UserDTO client;
+	private List<OrderItemDTO> items;
+
+	public OrderDTO(Order entity) {
+		this.id = entity.getId();
+		this.moment = entity.getMoment();
+		this.orderStatus = entity.getOrderStatus().toString();
+		this.client = new UserDTO(entity.getClient());
+
+		this.items = entity.getItems().stream().map(OrderItemDTO::new).collect(Collectors.toList());
+	}
+
+	public Integer getId() {
+		return id;
+	}
+
+	public Instant getMoment() {
+		return moment;
+	}
+
+	public String getOrderStatus() {
+		return orderStatus;
+	}
+
+	public UserDTO getClient() {
+		return client;
+	}
+
+	public List<OrderItemDTO> getItems() {
+		return items;
+	}
+}
