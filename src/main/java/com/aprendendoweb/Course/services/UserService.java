@@ -55,4 +55,15 @@ public class UserService {
 			throw new RuntimeException("Não é possivel excluir o usuário porque está associado a outras entidades");
 		}
 	}
+		@Transactional
+		public UserDTO update(Long id, UserDTO dto) {
+		    User entity = repository.findById(id)
+		            .orElseThrow(() -> new RuntimeException("Usuário não encontrado"));
+		    entity.setName(dto.getName());
+		    entity.setEmail(dto.getEmail());
+		    entity.setPhone(dto.getPhone());
+
+		    entity = repository.save(entity);
+		    return new UserDTO(entity);
+	}
 }

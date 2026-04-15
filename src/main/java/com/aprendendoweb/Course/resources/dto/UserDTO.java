@@ -8,6 +8,9 @@ public class UserDTO {
 		private String name;
 		private String email;
 		private String phone;
+		
+		public UserDTO() {
+		}
 
 		public UserDTO(User entity) {
 			this.id = entity.getId();
