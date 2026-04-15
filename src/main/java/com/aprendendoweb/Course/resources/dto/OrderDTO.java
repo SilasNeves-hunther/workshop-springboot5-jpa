@@ -12,14 +12,20 @@ public class OrderDTO {
 	private String orderStatus;
 	private UserDTO client;
 	private List<OrderItemDTO> items;
+	private PaymentDTO payment;
+	private Double  total;
 
 	public OrderDTO(Order entity) {
 		this.id = entity.getId();
 		this.moment = entity.getMoment();
 		this.orderStatus = entity.getOrderStatus().toString();
 		this.client = new UserDTO(entity.getClient());
-
 		this.items = entity.getItems().stream().map(OrderItemDTO::new).collect(Collectors.toList());
+		
+		if(entity.getPayment() != null) {
+			this.payment = new PaymentDTO(entity.getPayment());
+		}
+		this.total = entity.getTotal();
 	}
 
 	public Long getId() {
@@ -40,5 +46,13 @@ public class OrderDTO {
 
 	public List<OrderItemDTO> getItems() {
 		return items;
+	}
+	
+	public PaymentDTO getPayment() {
+		return payment;
+	}
+	
+	public Double getTotal() {
+		return total;
 	}
 }
