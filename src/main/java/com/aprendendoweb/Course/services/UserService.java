@@ -8,6 +8,7 @@ import org.springframework.stereotype.Service;
 import com.aprendendoweb.Course.entities.User;
 import com.aprendendoweb.Course.repositories.UserRepository;
 import com.aprendendoweb.Course.resources.dto.UserDTO;
+import com.aprendendoweb.Course.resources.dto.UserInsertDTO;
 
 import jakarta.transaction.Transactional;
 
@@ -29,5 +30,16 @@ public class UserService {
 	public UserDTO findById(Long id) {
 		User user = repository.findById(id).orElseThrow(() -> new RuntimeException("Usuário não encontrado"));
 		return new UserDTO(user);
+	}
+	
+	@Transactional
+	public UserDTO insert(UserInsertDTO dto) {
+		User entity = new User();
+		entity.setName(dto.getName());
+		entity.setEmail(dto.getEmail());
+		entity.setPhone(dto.getPhone());
+		entity.setPassword(dto.getPassword());
+		entity = repository.save(entity);
+		return new UserDTO(entity);
 	}
 }
