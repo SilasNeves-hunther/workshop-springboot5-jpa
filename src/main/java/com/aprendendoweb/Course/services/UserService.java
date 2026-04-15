@@ -3,6 +3,7 @@ package com.aprendendoweb.Course.services;
 import java.util.List;
 import java.util.stream.Collectors;
 
+import org.springframework.dao.DataIntegrityViolationException;
 import org.springframework.stereotype.Service;
 
 import com.aprendendoweb.Course.entities.User;
@@ -31,7 +32,7 @@ public class UserService {
 		User user = repository.findById(id).orElseThrow(() -> new RuntimeException("Usuário não encontrado"));
 		return new UserDTO(user);
 	}
-	
+
 	@Transactional
 	public UserDTO insert(UserInsertDTO dto) {
 		User entity = new User();
@@ -41,5 +42,17 @@ public class UserService {
 		entity.setPassword(dto.getPassword());
 		entity = repository.save(entity);
 		return new UserDTO(entity);
+	}
+
+	@Transactional
+	public void delete(Long id) {
+		try {
+			if (!repository.existsById(id)) {
+				throw new RuntimeException("Usuário não encontrado");
+			}
+			repository.deleteById(id);
+		} catch (DataIntegrityViolationException e) {
+			throw new RuntimeException("Não é possivel excluir o usuário porque está associado a outras entidades");
+		}
 	}
 }
