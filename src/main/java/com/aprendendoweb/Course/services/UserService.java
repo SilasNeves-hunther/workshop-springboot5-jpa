@@ -4,12 +4,15 @@ import java.util.List;
 import java.util.stream.Collectors;
 
 import org.springframework.dao.DataIntegrityViolationException;
+import org.springframework.dao.EmptyResultDataAccessException;
 import org.springframework.stereotype.Service;
 
 import com.aprendendoweb.Course.entities.User;
 import com.aprendendoweb.Course.repositories.UserRepository;
 import com.aprendendoweb.Course.resources.dto.UserDTO;
 import com.aprendendoweb.Course.resources.dto.UserInsertDTO;
+import com.aprendendoweb.Course.services.exceptions.DatabaseException;
+import com.aprendendoweb.Course.services.exceptions.ResourceNotFoundException;
 
 import jakarta.transaction.Transactional;
 
@@ -44,16 +47,14 @@ public class UserService {
 		return new UserDTO(entity);
 	}
 
-	@Transactional
 	public void delete(Long id) {
-		try {
-			if (!repository.existsById(id)) {
-				throw new com.aprendendoweb.Course.services.exceptions.ResourceNotFoundException("Usuário não encontrado");
-			}
-			repository.deleteById(id);
-		} catch (DataIntegrityViolationException e) {
-			throw e;
-		}
+		 try {
+		        repository.deleteById(id);
+		    } catch (EmptyResultDataAccessException e) {
+		        throw new ResourceNotFoundException("Usuário com ID" + id + "não encontrado");
+		    } catch (DataIntegrityViolationException e) {
+		        throw new DatabaseException("Não é possível excluir o usuário porque está associado a outras entidades");
+		    }
 	}
 		@Transactional
 		public UserDTO update(Long id, UserDTO dto) {
