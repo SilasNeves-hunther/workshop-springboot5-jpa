@@ -29,7 +29,7 @@ public class UserService {
 
 	@Transactional
 	public UserDTO findById(Long id) {
-		User user = repository.findById(id).orElseThrow(() -> new RuntimeException("Usuário não encontrado"));
+		User user = repository.findById(id).orElseThrow(() -> new com.aprendendoweb.Course.services.exceptions.ResourceNotFoundException("Usuário não encontrado"));
 		return new UserDTO(user);
 	}
 
@@ -48,17 +48,17 @@ public class UserService {
 	public void delete(Long id) {
 		try {
 			if (!repository.existsById(id)) {
-				throw new RuntimeException("Usuário não encontrado");
+				throw new com.aprendendoweb.Course.services.exceptions.ResourceNotFoundException("Usuário não encontrado");
 			}
 			repository.deleteById(id);
 		} catch (DataIntegrityViolationException e) {
-			throw new RuntimeException("Não é possivel excluir o usuário porque está associado a outras entidades");
+			throw e;
 		}
 	}
 		@Transactional
 		public UserDTO update(Long id, UserDTO dto) {
 		    User entity = repository.findById(id)
-		            .orElseThrow(() -> new RuntimeException("Usuário não encontrado"));
+		            .orElseThrow(() -> new com.aprendendoweb.Course.services.exceptions.ResourceNotFoundException("Usuário não encontrado"));
 		    entity.setName(dto.getName());
 		    entity.setEmail(dto.getEmail());
 		    entity.setPhone(dto.getPhone());
