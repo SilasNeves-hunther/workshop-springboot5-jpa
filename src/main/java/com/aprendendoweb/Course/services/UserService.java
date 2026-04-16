@@ -14,6 +14,7 @@ import com.aprendendoweb.Course.resources.dto.UserInsertDTO;
 import com.aprendendoweb.Course.services.exceptions.DatabaseException;
 import com.aprendendoweb.Course.services.exceptions.ResourceNotFoundException;
 
+import jakarta.persistence.EntityNotFoundException;
 import jakarta.transaction.Transactional;
 
 @Service
@@ -32,7 +33,9 @@ public class UserService {
 
 	@Transactional
 	public UserDTO findById(Long id) {
-		User user = repository.findById(id).orElseThrow(() -> new com.aprendendoweb.Course.services.exceptions.ResourceNotFoundException("Usuário não encontrado"));
+		User user = repository.findById(id)
+				.orElseThrow(() -> new com.aprendendoweb.Course.services.exceptions.ResourceNotFoundException(
+						"Usuário não encontrado"));
 		return new UserDTO(user);
 	}
 
@@ -48,23 +51,27 @@ public class UserService {
 	}
 
 	public void delete(Long id) {
-		 try {
-		        repository.deleteById(id);
-		    } catch (EmptyResultDataAccessException e) {
-		        throw new ResourceNotFoundException("Usuário com ID" + id + "não encontrado");
-		    } catch (DataIntegrityViolationException e) {
-		        throw new DatabaseException("Não é possível excluir o usuário porque está associado a outras entidades");
-		    }
+		try {
+			repository.deleteById(id);
+		} catch (EmptyResultDataAccessException e) {
+			throw new ResourceNotFoundException("Usuário com ID" + id + "não encontrado");
+		} catch (DataIntegrityViolationException e) {
+			throw new DatabaseException("Não é possível excluir o usuário porque está associado a outras entidades");
+		}
 	}
-		@Transactional
-		public UserDTO update(Long id, UserDTO dto) {
-		    User entity = repository.findById(id)
-		            .orElseThrow(() -> new com.aprendendoweb.Course.services.exceptions.ResourceNotFoundException("Usuário não encontrado"));
-		    entity.setName(dto.getName());
-		    entity.setEmail(dto.getEmail());
-		    entity.setPhone(dto.getPhone());
 
-		    entity = repository.save(entity);
-		    return new UserDTO(entity);
+	@Transactional
+	public UserDTO update(Long id, UserDTO dto) {
+		try {
+			User entity = repository.getReferenceById(id);
+			entity.setName(dto.getName());
+			entity.setEmail(dto.getEmail());
+			entity.setPhone(dto.getPhone());
+
+			entity = repository.save(entity);
+			return new UserDTO(entity);
+		} catch (EntityNotFoundException e) {
+			throw new ResourceNotFoundException("Usuário com ID " + id + " não encontrado");
+		}
 	}
 }
